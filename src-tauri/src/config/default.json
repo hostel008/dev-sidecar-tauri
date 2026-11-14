@@ -1,0 +1,454 @@
+{
+  "app": {
+    "metaInfo": {
+      "updateLog": "Tauri v1.0.0 自带配置",
+      "version": 202601010000,
+      "id": "internal"
+    },
+    "mode": "default",
+    "autoStart": { "enabled": false },
+    "remoteConfig": {
+      "enabled": true,
+      "url": "https://raw.giteeusercontent.com/wangliang181230/dev-sidecar-config/raw/main/remote_config.json",
+      "personalUrl": ""
+    },
+    "startShowWindow": true,
+    "needCheckHideWindow": true,
+    "showHideShortcut": "Alt + S",
+    "windowSize": { "width": 900, "height": 750 },
+    "theme": "dark",
+    "closeAction": "ask",
+    "autoChecked": true,
+    "skipPreRelease": true,
+    "dock": { "hideWhenWinClose": false },
+    "closeStrategy": 0,
+    "showShutdownTip": true,
+    "logDisabled": false,
+    "logFileSavePath": "${logDir}",
+    "keepLogFileCount": 15,
+    "maxLogFileSize": 1,
+    "maxLogFileSizeUnit": "GB"
+  },
+  "server": {
+    "enabled": true,
+    "host": "127.0.0.1",
+    "port": 31181,
+    "fakeServerMaxLength": 100,
+    "setting": {
+      "NODE_TLS_REJECT_UNAUTHORIZED": true,
+      "verifySsl": true,
+      "allowTls12": false,
+      "allowHttp2": true,
+      "interceptMode": "intercepts-only",
+      "script": { "enabled": true, "defaultDir": "./extra/scripts/" },
+      "userBasePath": "${userBase}",
+      "rootDir": "${userBase}",
+      "rootCaFile": { "certPath": "${caCert}", "keyPath": "${caKey}" },
+      "defaultTimeout": 20000,
+      "defaultKeepAliveTimeout": 30000,
+      "streamBodyThreshold": 1048576,
+      "timeoutMapping": { "github.com": { "timeout": 20000, "keepAliveTimeout": 30000 } },
+      "lowSpeedDelay": 200
+    },
+    "compatible": { "connect": {}, "request": {} },
+    "cloudflareRoute": { "enabled": false, "preferredEndpoint": "", "mode": "blacklist", "domains": {} },
+    "intercept": { "enabled": true },
+    "intercepts": {
+      "github.com": {
+        ".*": { "sni": "baidu.com" },
+        "^([\\w.-]+){2,}/?(\\?.*)?$": {
+          "tampermonkeyScript": "https://raw.giteeusercontent.com/wangliang181230/dev-sidecar-config/raw/main/tampermonkey.js",
+          "script": "https://raw.giteeusercontent.com/wangliang181230/dev-sidecar-config/raw/main/GithubEnhanced-High-Speed-Download.user.js",
+          "remark": "注：上面所使用的脚本地址，为高速镜像地址。",
+          "desc": "油猴脚本：高速下载 Git Clone/SSH、Release、Raw、Code(ZIP) 等文件 (公益加速)"
+        },
+        "/fluidicon.png": { "cacheDays": 365, "desc": "Github那只猫的图片，缓存1年" },
+        "^((/[^/]+){2})/pull/\\d+/open_with_menu.*$": { "cacheDays": 7 },
+        "^((/[^/]+){2,})/raw((/[^/]+)+\\.(jpg|jpeg|png|gif))(\\?.*)?$": {
+          "proxy": "https://raw.githubusercontent.com${m[1]}${m[3]}",
+          "sni": "baidu.com",
+          "cacheDays": 7
+        },
+        "^((/[^/]+){2,})/raw((/[^/]+)+\\.js)(\\?.*)?$": {
+          "proxy": "https://raw.githubusercontent.com${m[1]}${m[3]}",
+          "sni": "baidu.com",
+          "responseReplace": { "headers": { "content-type": "application/javascript; charset=utf-8" } }
+        }
+      },
+      "github.githubassets.com": { ".*": { "sni": "baidu.com" } },
+      "camo.githubusercontent.com": { "^[a-zA-Z0-9/]+(\\?.*)?$": { "cacheDays": 365 } },
+      "collector.github.com": { ".*": { "sni": "baidu.com" } },
+      "customer-stories-feed.github.com": { ".*": { "proxy": "customer-stories-feed.fastgit.org" } },
+      "user-images.githubusercontent.com": { "^/.*\\.png(\\?.*)?$": { "cacheDays": 365 } },
+      "private-user-images.githubusercontent.com": { "^/.*\\.png(\\?.*)?$": { "cacheDays": 30 } },
+      "avatars.githubusercontent.com": { "^/u/\\d+(\\?.*)?$": { "cacheDays": 365 } },
+      "api.github.com": {
+        "^/_private/browser/stats$": { "success": true },
+        ".*": { "sni": "baidu.com" }
+      },
+      "*.docker.com": { ".*": { "sni": "baidu.com" } },
+      "login.docker.com": { "/favicon.ico": { "proxy": "hub.docker.com", "sni": "baidu.com" } },
+      "www.google.com": { "/recaptcha/.*": { "proxy": "www.recaptcha.net" } },
+      "www.gstatic.com": { "/recaptcha/.*": { "proxy": "www.recaptcha.net" } },
+      "ajax.googleapis.com": {
+        ".*": {
+          "proxy": "ajax.proxy.ustclug.org",
+          "backup": ["gapis.geekzu.org"],
+          "test": "ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"
+        }
+      },
+      "fonts.googleapis.com": {
+        ".*": {
+          "proxy": "fonts.googleapis.cn",
+          "backup": ["fonts.loli.net"],
+          "test": "https://fonts.googleapis.com/css?family=Oswald"
+        }
+      },
+      "fonts.gstatic.com": {
+        ".*": {
+          "proxy": "fonts-gstatic.proxy.ustclug.org",
+          "backup": ["gstatic.loli.net"],
+          "test": "https://fonts.googleapis.com/css?family=Oswald"
+        }
+      },
+      "themes.googleapis.com": {
+        ".*": { "proxy": "themes.loli.net", "backup": ["themes.proxy.ustclug.org"] }
+      },
+      "themes.googleusercontent.com": { ".*": { "proxy": "google-themes.proxy.ustclug.org" } },
+      "clients*.google.com": { ".*": { "abort": false } },
+      "www.googleapis.com": { ".*": { "abort": false } },
+      "lh*.googleusercontent.com": { ".*": { "abort": false } },
+      "*.s3.1amazonaws1.com": { "/sqlite3/.*": { "redirect": "npmmirror.com/mirrors" } },
+      "*.carbonads.com": { "/carbon.*": { "abort": true, "desc": "广告拦截" } },
+      "*.buysellads.com": { "/ads/.*": { "abort": true, "desc": "广告拦截" } }
+    },
+    "preSetIpList": {
+      "github.com": {
+        "4.237.22.38": true,
+        "20.26.156.215": true,
+        "20.27.177.113": true,
+        "20.87.245.0": true,
+        "20.200.245.247": true,
+        "20.201.28.151": true,
+        "20.205.243.166": true,
+        "140.82.113.3": true,
+        "140.82.114.4": true,
+        "140.82.116.3": true,
+        "140.82.116.4": true,
+        "140.82.121.3": true,
+        "140.82.121.4": true
+      },
+      "api.github.com": {
+        "20.26.156.210": true,
+        "20.27.177.116": true,
+        "20.87.245.6": true,
+        "20.200.245.245": true,
+        "20.201.28.148": true,
+        "20.205.243.168": true,
+        "20.248.137.49": true,
+        "140.82.112.5": true,
+        "140.82.113.6": true,
+        "140.82.116.6": true,
+        "140.82.121.6": true
+      },
+      "codeload.github.com": {
+        "20.26.156.216": true,
+        "20.27.177.114": true,
+        "20.87.245.7": true,
+        "20.200.245.246": true,
+        "20.201.28.149": true,
+        "20.205.243.165": true,
+        "20.248.137.55": true,
+        "140.82.113.9": true,
+        "140.82.114.10": true,
+        "140.82.116.10": true,
+        "140.82.121.9": true
+      },
+      "*.githubusercontent.com": {
+        "146.75.92.133": true,
+        "199.232.88.133": true,
+        "199.232.144.133": true
+      },
+      "github.io": {
+        "185.199.108.153": true,
+        "185.199.109.153": true,
+        "185.199.110.153": true,
+        "185.199.111.153": true
+      },
+      "*.githubassets.com": {
+        "185.199.108.154": true,
+        "185.199.109.154": true,
+        "185.199.110.154": true,
+        "185.199.111.154": true
+      },
+      "*.pixiv.net": {
+        "210.140.139.154": true,
+        "210.140.139.157": true,
+        "210.140.139.160": true
+      },
+      "hub.docker.com": {
+        "44.221.37.199": true,
+        "52.44.227.212": true,
+        "54.156.140.159": true
+      }
+    },
+    "whiteList": {
+      "*.cn": true,
+      "cn.*": true,
+      "*china*": true,
+      "*.dingtalk.com": true,
+      "*.apple.com": true,
+      "*.microsoft.com": true,
+      "*.alipay.com": true,
+      "*.qq.com": true,
+      "*.baidu.com": true,
+      "192.168.*": true
+    },
+    "dns": {
+      "providers": {
+        "safe360": { "server": "tls://dot.360.cn", "forSNI": true, "cacheTtl": 60 },
+        "aliyun": { "server": "tls://dns.alidns.com", "cacheTtl": 60 },
+        "cloudflare": { "server": "https://1.1.1.1/dns-query", "cacheTtl": 60 },
+        "quad9": { "server": "https://9.9.9.9/dns-query", "cacheTtl": 60 },
+        "rubyfish": { "server": "https://rubyfish.cn/dns-query", "cacheTtl": 60 }
+      },
+      "mapping": {
+        "*.github.com": "quad9",
+        "*github*.com": "quad9",
+        "*.github.io": "quad9",
+        "*.docker.com": "quad9",
+        "*.stackoverflow.com": "quad9",
+        "*.electronjs.org": "quad9",
+        "*.amazonaws.com": "quad9",
+        "*.yarnpkg.com": "quad9",
+        "*.cloudfront.net": "quad9",
+        "*.cloudflare.com": "quad9",
+        "img.shields.io": "quad9",
+        "*.vuepress.vuejs.org": "quad9",
+        "*.gh.docmirror.top": "quad9",
+        "*.v2ex.com": "quad9",
+        "*.pypi.org": "quad9",
+        "*.jetbrains.com": "quad9",
+        "*.azureedge.net": "quad9"
+      },
+      "familyMapping": {
+        "*.github.com": "4",
+        "*github*.com": "4",
+        "*.github.io": "4",
+        "*.docker.com": "4",
+        "*.stackoverflow.com": "4",
+        "*.electronjs.org": "4",
+        "*.amazonaws.com": "4",
+        "*.yarnpkg.com": "4",
+        "*.cloudfront.net": "4",
+        "*.cloudflare.com": "4",
+        "img.shields.io": "4",
+        "*.vuepress.vuejs.org": "4",
+        "*.gh.docmirror.top": "4",
+        "*.v2ex.com": "4",
+        "*.pypi.org": "4",
+        "*.jetbrains.com": "4",
+        "*.azureedge.net": "4"
+      },
+      "speedTest": {
+        "enabled": true,
+        "interval": 300000,
+        "hostnameList": ["github.com"],
+        "dnsProviders": ["cloudflare", "safe360", "rubyfish"]
+      }
+    }
+  },
+  "proxy": {
+    "enabled": true,
+    "name": "系统代理",
+    "use": "local",
+    "other": [],
+    "proxyHttp": false,
+    "setEnv": false,
+    "setCaBundle": false,
+    "excludeDomesticDomainAllowList": true,
+    "autoUpdateDomesticDomainAllowList": true,
+    "remoteDomesticDomainAllowListFileUrl": "https://raw.githubusercontent.com/pluwen/china-domain-allowlist/refs/heads/main/allow-list.sorl",
+    "domesticDomainAllowListFileAbsolutePath": null,
+    "domesticDomainAllowListFilePath": "./extra/proxy/domestic-domain-allowlist.txt",
+    "excludeIpList": {
+      "*.cn": true,
+      "cn.*": true,
+      "*china*": true,
+      "*.kkgithub.com": true,
+      "*.ghproxy.*": true,
+      "ssh.github.com": true,
+      "www.deepl.com": true,
+      "*.csdn.net": true,
+      "*.so.com": true,
+      "*.baidu.com": true,
+      "*.baiducontent.com": true,
+      "*.bdimg.com": true,
+      "*.bdstatic.com": true,
+      "*.bdydns.com": true,
+      "*.tencent.com": true,
+      "*.qq.com": true,
+      "*.weixin.com": true,
+      "*.weixinbridge.com": true,
+      "*.wechat.com": true,
+      "*.idqqimg.com": true,
+      "*.gtimg.com": true,
+      "*.qpic.com": true,
+      "*.qlogo.com": true,
+      "*.myapp.com": true,
+      "*.aliyun.com": true,
+      "*.alipay.com": true,
+      "*.taobao.com": true,
+      "*.tmall.com": true,
+      "*.alipayobjects.com": true,
+      "*.dingtalk.com": true,
+      "*.mmstat.com": true,
+      "*.alicdn.com": true,
+      "*.hdslb.com": true,
+      "gitee.com": true,
+      "*.gitee.com": true,
+      "*.gitee.io": true,
+      "*.giteeusercontent.com": true,
+      "*.mozilla.org": true,
+      "*.mozilla.com": true,
+      "*.mozilla.net": true,
+      "*.firefox.com": true,
+      "*.firefox.org": true,
+      "*.sonatype.org": true,
+      "*.maven.org": true,
+      "*.mvnrepository.com": true,
+      "*.apple.com": true,
+      "*.icloud.com": true,
+      "*.microsoft.com": true,
+      "*.windows.com": true,
+      "*.office.com": true,
+      "*.office.net": true,
+      "*.live.com": true,
+      "*.msn.com": true,
+      "*.wps.com": true,
+      "*.wps.net": true,
+      "*.ksord.com": true,
+      "*.qihoo.com": true,
+      "*.qihucdn.com": true,
+      "*.360.com": true,
+      "*.360safe.com": true,
+      "*.360buyimg.com": true,
+      "*.360buy.com": true,
+      "*.jd.com": true,
+      "*.jcloud.com": true,
+      "*.bilibili.com": true,
+      "*.bilivideo.com": true,
+      "*.biliapi.net": true,
+      "*.10086.com": true,
+      "*.139.com": true,
+      "*.xunlei.com": true,
+      "*.icpapi.com": true,
+      "*.navicat.com": true,
+      "objects-origin.githubusercontent.com": true,
+      "challenges.cloudflare.com": true,
+      "localhost": true,
+      "localhost.*": true,
+      "127.*.*.*": true,
+      "test.*": true,
+      "10.*.*.*": true,
+      "172.16.*.*": true,
+      "172.17.*.*": true,
+      "172.18.*.*": true,
+      "172.19.*.*": true,
+      "172.20.*.*": true,
+      "172.21.*.*": true,
+      "172.22.*.*": true,
+      "172.23.*.*": true,
+      "172.24.*.*": true,
+      "172.25.*.*": true,
+      "172.26.*.*": true,
+      "172.27.*.*": true,
+      "172.28.*.*": true,
+      "172.29.*.*": true,
+      "172.30.*.*": true,
+      "172.31.*.*": true,
+      "192.168.*.*": true
+    }
+  },
+  "plugin": {
+    "node": {
+      "name": "NPM加速",
+      "enabled": false,
+      "startWithApp": false,
+      "tip": "如果你没有安装nodejs则不需要启动它",
+      "startup": { "variables": true },
+      "setting": {
+        "command": "npm",
+        "strict-ssl": true,
+        "cafile": false,
+        "NODE_EXTRA_CA_CERTS": false,
+        "NODE_TLS_REJECT_UNAUTHORIZED": false,
+        "registry": "https://registry.npmjs.org",
+        "registryList": {
+          "taobao": { "name": "taobao镜像", "value": "https://registry.npmmirror.com" },
+          "ustclug": { "name": "中国科学技术大学镜像", "value": "https://npmreg.proxy.ustclug.org" }
+        },
+        "yarnRegistry": "default",
+        "yarnRegistryList": {
+          "taobao": { "name": "taobao镜像", "value": "https://registry.npmmirror.com" }
+        }
+      },
+      "variables": {},
+      "envVariables": {
+        "ELECTRON_MIRROR": "https://npmmirror.com/mirrors/electron/",
+        "ELECTRON_BUILDER_BINARIES_MIRROR": "https://npmmirror.com/mirrors/electron-builder-binaries/",
+        "PHANTOMJS_CDNURL": "https://npmmirror.com/mirrors/phantomjs",
+        "CHROMEDRIVER_CDNURL": "https://npmmirror.com/mirrors/chromedriver",
+        "SASS_BINARY_SITE": "https://npmmirror.com/mirrors/node-sass",
+        "NVM_NODEJS_ORG_MIRROR": "https://npmmirror.com/mirrors/node",
+        "OPERADRIVER": "https://npmmirror.com/mirrors/operadriver",
+        "PYTHON_MIRROR": "https://npmmirror.com/mirrors/python"
+      }
+    },
+    "git": {
+      "name": "Git.exe代理",
+      "enabled": false,
+      "startWithApp": false,
+      "tip": "如果你没有安装git命令行则不需要启动它",
+      "setting": {
+        "sslVerify": true,
+        "noProxyUrls": {
+          "https://gitee.com": true,
+          "https://e.coding.net": true,
+          "https://codeup.aliyun.com": true
+        }
+      }
+    },
+    "pip": {
+      "name": "PIP加速",
+      "statusOff": true,
+      "enabled": null,
+      "startWithApp": false,
+      "tip": "如果你没有安装pip则不需要启动它",
+      "startup": {},
+      "setting": {
+        "command": "pip",
+        "trustedHost": "pypi.org",
+        "registry": "https://pypi.org/simple/",
+        "registryList": {
+          "aliyun": { "name": "阿里镜像", "value": "https://mirrors.aliyun.com/pypi/simple/" },
+          "baidu": { "name": "百度镜像", "value": "https://mirror.baidu.com/pypi/simple/" },
+          "douban": { "name": "豆瓣镜像", "value": "http://pypi.douban.com/simple/" },
+          "sohu": { "name": "搜狐镜像", "value": "http://mirrors.sohu.com/Python/" },
+          "ustclug": { "name": "中科大镜像", "value": "https://pypi.mirrors.ustc.edu.cn/simple/" },
+          "bfsu": { "name": "北京外国语大学镜像", "value": "https://mirrors.bfsu.edu.cn/pypi/web/simple/" },
+          "nju": { "name": "南京大学镜像", "value": "https://mirror.nju.edu.cn/pypi/web/simple/" },
+          "tsinghua": { "name": "清华大学镜像", "value": "https://pypi.tuna.tsinghua.edu.cn/simple/" },
+          "hust": { "name": "华中科大镜像", "value": "https://mirrors.hust.edu.cn/pypi/web/simple/" },
+          "sdut": { "name": "山东理工大学镜像", "value": "http://pypi.sdutlinux.org/" }
+        }
+      }
+    }
+  },
+  "help": {
+    "dataList": [
+      { "title": "查看DevSidecar的说明文档（Wiki）", "url": "https://github.com/docmirror/dev-sidecar/wiki" },
+      { "title": "为了展示更多帮助信息，请启用 “远程配置” 功能！！！" }
+    ]
+  }
+}

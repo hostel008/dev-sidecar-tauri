@@ -1,0 +1,64 @@
+@import "tailwindcss";
+
+:root {
+  color-scheme: dark;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei",
+    "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+html[data-theme="light"] {
+  color-scheme: light;
+}
+
+body {
+  margin: 0;
+  background-color: var(--ds-bg);
+  color: var(--ds-text);
+  font-size: 14px;
+}
+
+/* 主题变量 */
+html[data-theme="dark"] {
+  --ds-bg: #12141a;
+  --ds-bg-soft: #1b1e26;
+  --ds-panel: #1f232c;
+  --ds-border: #2c313b;
+  --ds-text: #dfe3ea;
+  --ds-text-soft: #9aa3b2;
+  --ds-primary: #4f8cff;
+  --ds-success: #35c46a;
+  --ds-warn: #f0a92e;
+  --ds-danger: #f2585b;
+}
+
+html[data-theme="light"] {
+  --ds-bg: #f5f7fa;
+  --ds-bg-soft: #ffffff;
+  --ds-panel: #ffffff;
+  --ds-border: #e3e8ef;
+  --ds-text: #22272e;
+  --ds-text-soft: #5b6472;
+  --ds-primary: #2f6bff;
+  --ds-success: #1f9d55;
+  --ds-warn: #c77c0a;
+  --ds-danger: #d93b3b;
+}
+
+/* 滚动条 */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--ds-border);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+input,
+select,
+textarea {
+  color-scheme: inherit;
+}
